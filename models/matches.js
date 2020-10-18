@@ -3,11 +3,11 @@ const mongoose = require('mongoose')
 const matchScheme = new mongoose.Schema({
     team1: {
         type: String,
-        required: true
+        required: (true, 'please had team 1')
     },
     team2: {
         type: String,
-        required: true
+        required: (true, 'please add team 2')
     },
     gameType: {
         type: String,

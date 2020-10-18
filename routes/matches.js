@@ -1,15 +1,16 @@
 const express = require('express');
 const { getMatches, getMatch, createMatch, updateMatch, deleteMatch } = require('../controller/matches.js')
+const { protect, authorize } = require('../middleware/auth')
 
 const router = express.Router();
 
 router.route('/')
     .get(getMatches)
-    .post(createMatch);
+    .post(protect, authorize('admin'), createMatch);
 
 router.route('/:id')
     .get(getMatch)
-    .put(updateMatch)
-    .delete(deleteMatch);
+    .put(protect, authorize('admin'), updateMatch)
+    .delete(protect, authorize('admin'), deleteMatch);
 
 module.exports = router;

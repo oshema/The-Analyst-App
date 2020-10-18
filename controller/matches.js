@@ -1,3 +1,4 @@
+const ErrorResponse = require('../utills/errorResponse')
 const Match = require('../models/matches')
 
 // @desc get all matches
@@ -5,14 +6,19 @@ const Match = require('../models/matches')
 // @access public
 
 exports.getMatches = async (req, res, next) => {
-    const findMatches = await Match.find();
-    res.status('200').json(
-        {
-            success: true,
-            msg: 'Show all matches',
-            count: findMatches.length,
-            data: findMatches
-        })
+    try {
+        const findMatches = await Match.find();
+        res.status('200').json(
+            {
+                success: true,
+                msg: 'Show all matches',
+                count: findMatches.length,
+                data: findMatches
+            })
+    }
+    catch (err) {
+        next(err)
+    }
 }
 
 // @desc get specific match
@@ -20,11 +26,16 @@ exports.getMatches = async (req, res, next) => {
 // @access public
 
 exports.getMatch = async (req, res, next) => {
-    const findMatch = await Match.findById(req.params.id);
-    if (!findMatch) {
-        return res.status(400).json({ success: false, msg: "couldn't find match in DB" })
+    try {
+        const findMatch = await Match.findById(req.params.id);
+        if (!findMatch) {
+            return next(new ErrorResponse(`couldn't find id: ${req.params.id}`, 404))
+        }
+        res.status(200).json({ success: true, msg: `Show match ${req.params.id}`, data: findMatch })
     }
-    res.status(200).json({ success: true, msg: `Show match ${req.params.id}`, data: findMatch })
+    catch (err) {
+        next(err)
+    }
 }
 
 // @desc post match
@@ -32,13 +43,18 @@ exports.getMatch = async (req, res, next) => {
 // @access public
 
 exports.createMatch = async (req, res, next) => {
-    const newMatch = await Match.create(req.body);
-    res.status(201).json(
-        {
-            success: true,
-            msg: `post new match`,
-            data: newMatch
-        })
+    try {
+        const newMatch = await Match.create(req.body);
+        res.status(201).json(
+            {
+                success: true,
+                msg: `post new match`,
+                data: newMatch
+            })
+    }
+    catch (err) {
+        next(err)
+    }
 }
 
 // @desc update match
@@ -46,15 +62,20 @@ exports.createMatch = async (req, res, next) => {
 // @access private
 
 exports.updateMatch = async (req, res, next) => {
-    const matchUpdate = await Match.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-        runValidators: true
-    })
+    try {
+        const matchUpdate = await Match.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true
+        })
 
-    if (!matchUpdate) {
-        return res.status(400).json({ success: false, msg: "couldn't find match" })
+        if (!matchUpdate) {
+            return next(new ErrorResponse(`couldn't find id: ${req.params.id}`, 404))
+        }
+        res.status('200').json({ success: true, msg: `Update match ${req.params.id}`, data: matchUpdate })
     }
-    res.status('200').json({ success: true, msg: `Update match ${req.params.id}`, data: matchUpdate })
+    catch (err) {
+        next(err)
+    }
 }
 
 // @desc delete match
@@ -62,12 +83,17 @@ exports.updateMatch = async (req, res, next) => {
 // @access private
 
 exports.deleteMatch = async (req, res, next) => {
-    const matchUpdate = await Match.findByIdAndDelete(req.params.id)
+    try {
+        const matchDelete = await Match.findByIdAndDelete(req.params.id)
 
-    if (!matchUpdate) {
-        return res.status(400).json({ success: false, msg: "couldn't find match" })
+        if (!matchDelete) {
+            return next(new ErrorResponse(`couldn't find id: ${req.params.id}`, 404))
+        }
+        res.status('200').json({ success: true, msg: `deleted match ${req.params.id}`, data: matchDelete })
     }
-    res.status('200').json({ success: true, msg: `deleted match ${req.params.id}`, data: matchUpdate })
+    catch (err) {
+        next(err)
+    }
 }
 
 
