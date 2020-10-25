@@ -26,6 +26,16 @@ const betScheme = new mongoose.Schema({
         min: [0, 'cannot be below 0'],
         require: true
     },
+    match: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Match',
+        required: true
+    },
+    user: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+        required: true
+    },
     createdAt: {
         type: Date,
         default: Date.now
@@ -42,4 +52,4 @@ betScheme.pre('save', function (next) {
     next();
 })
 
-module.exports = mongoose.model('bet', betScheme);
+module.exports = mongoose.model('Bet', betScheme);

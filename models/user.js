@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const crypto = require('crypto')
 const bcrypt = require('bcryptjs');
 const isEmail = require('validator/lib/isEmail');
 const jwt = require('jsonwebtoken')
@@ -25,7 +26,7 @@ const userScheme = new mongoose.Schema({
         select: false
     },
     resetPasswordToken: String,
-    resetPasswordExpierd: Date,
+    resetPasswordExpier: Date,
     createdAt: {
         type: Date,
         default: Date.now
@@ -34,6 +35,10 @@ const userScheme = new mongoose.Schema({
 
 //bcrypt password
 userScheme.pre('save', async function (next) {
+
+    if (!this.isModified('password')) {
+        next();
+    }
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
     next();
@@ -51,6 +56,19 @@ userScheme.methods.matchPassword = async function (loginPassword) {
     return await bcrypt.compare(loginPassword, this.password);
 }
 
+//generate and hash password token
+userScheme.methods.getResetPasswordToken = function () {
+    //generate token
+    const notHashedPasswordToken = crypto.randomBytes(20).toString('hex');
 
+    //hash the token and set to resetPassword field
+    this.resetPasswordToken = crypto.createHash('sha256').update(notHashedPasswordToken).digest('hex');
 
-module.exports = mongoose.model('user', userScheme);
+    //set expire
+    this.resetPasswordExpier = Date.now() + 10 * 60 * 1000;
+
+    return notHashedPasswordToken
+
+}
+
+module.exports = mongoose.model('User', userScheme);

@@ -9,8 +9,9 @@ exports.protect = async (req, res, next) => {
         if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
             token = req.headers.authorization.split(' ')[1];
         }
-
-        console.log(token)
+        else if (req.cookies.token) {
+            token = req.cookies.token;
+        }
 
         //check token exist
         if (!token) {
@@ -20,8 +21,6 @@ exports.protect = async (req, res, next) => {
         //verify token
         try {
             decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-            console.log(decoded)
 
             req.user = await User.findById(decoded.id)
 

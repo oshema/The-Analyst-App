@@ -1,5 +1,6 @@
 const ErrorResponse = require('../utills/errorResponse')
 const Bet = require('../models/bets')
+const Match = require('../models/matches')
 
 // @desc get all bets
 // @route GET /winner/bet
@@ -41,12 +42,20 @@ exports.getBet = async (req, res, next) => {
 }
 
 // @desc create bet
-// @route POST /winner/bet
+// @route POST /winner/bet/:matchId
 // @access public
 
 exports.createBet = async (req, res, next) => {
     try {
+        //add user to req.body
+        req.body.user = req.user.id
+
+        //add matchId to req.body
+        req.body.match = req.params.matchId
+
+        //create bet
         const newBet = await Bet.create(req.body);
+
         res.status(201).json(
             {
                 success: true,
@@ -91,14 +100,21 @@ exports.updateBet = async (req, res, next) => {
         }
         req.body.createdAt = Date.now();
 
-        const betUpdate = await Bet.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true
-        })
+        let betUpdate = await Bet.findById(req.params.id)
 
         if (!betUpdate) {
             return next(new ErrorResponse(`couldn't find id: ${req.params.id}`, 404))
         }
+
+        if (betUpdate.user.toString() !== req.user.id && req.user.role !== 'admin') {
+            return next(new ErrorResponse(`user: ${req.user.id} is not authorize to update this bet`, 401))
+        }
+
+        betUpdate = await Bet.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true
+        })
+
         res.status('200').json({ success: true, msg: `Update Bet ${req.params.id}`, data: betUpdate })
     }
     catch (err) {

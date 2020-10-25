@@ -5,11 +5,14 @@ const colors = require('colors')
 const cookieParser = require('cookie-parser')
 const errorHandler = require('./middleware/errorHandler')
 const connectDB = require('./config/db')
+const mongoSanitize = require('express-mongo-sanitize')
+const helmet = require('helmet')
 
 // import my routes
 const bets = require('./routes/bets.js')
 const matches = require('./routes/matches.js')
 const auth = require('./routes/auth.js')
+const users = require('./routes/users.js')
 
 //add configuration to process.env
 dotenv.config({ path: './config/config.env' })
@@ -21,6 +24,12 @@ const app = express();
 
 //body parser
 app.use(express.json());
+
+//sanitize data
+app.use(mongoSanitize());
+
+//helmet protection
+app.use(helmet());
 
 //middelware logger in development mode
 if (process.env.NODE_ENV === 'development') {
@@ -34,6 +43,7 @@ app.use(cookieParser())
 app.use('/winner/match', matches);
 app.use('/winner/bet', bets);
 app.use('/winner/auth', auth);
+app.use('/winner/users', users);
 
 //Error Handler middleware
 app.use(errorHandler);

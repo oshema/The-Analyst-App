@@ -28,10 +28,15 @@ const matchScheme = new mongoose.Schema({
         default: '0',
         min: [0, 'cannot be below 0']
     },
+    betCount: {
+        type: Number,
+        default: 0,
+        min: [0, 'cannot be below 0']
+    },
     finished: {
         type: Boolean,
         default: false
     }
 })
 
-module.exports = mongoose.model('match', matchScheme);
+module.exports = mongoose.model('Match', matchScheme);

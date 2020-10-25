@@ -4,9 +4,9 @@ const { protect, authorize } = require('../middleware/auth')
 
 const router = express.Router();
 
-router.route('/')
-    .get(getBets)
-    .post(protect, authorize('admin'), createBet);
+router.get('/', getBets)
+
+router.post('/:matchId', protect, authorize('admin'), createBet);
 
 router.route('/:id')
     .get(getBet)
