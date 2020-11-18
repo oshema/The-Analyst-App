@@ -12,23 +12,35 @@ const betScheme = new mongoose.Schema({
     score: {
         team1: {
             type: Number,
-            min: [0, 'cannot be below 0'],
+            min: [0, 'Score cannot be below 0'],
             require: true
         },
         team2: {
             type: Number,
-            min: [0, 'cannot be below 0'],
+            min: [0, 'Score cannot be below 0'],
             require: true
         }
     },
+    team1name: {
+        type: String,
+        required: true
+    },
+    team2name: {
+        type: String,
+        required: true
+    },
     bet: {
         type: Number,
-        min: [0, 'cannot be below 0'],
-        require: true
+        min: [10, 'Bet cannot be below 0'],
+        required: true
     },
     match: {
         type: mongoose.Schema.ObjectId,
         ref: 'Match',
+        required: true
+    },
+    matchTime: {
+        type: Date,
         required: true
     },
     user: {
@@ -36,9 +48,25 @@ const betScheme = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    username: {
+        type: String,
+        ref: 'User',
+        required: true
+    },
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    status: {
+        type: String,
+        default: 'open',
+        enum: [
+            'open',
+            'closed',
+            'finished',
+            'canceled',
+        ],
+
     }
 });
 

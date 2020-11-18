@@ -50,8 +50,17 @@ exports.createBet = async (req, res, next) => {
         //add user to req.body
         req.body.user = req.user.id
 
+        //add user name to req.body
+        req.body.username = req.user.name
+
         //add matchId to req.body
         req.body.match = req.params.matchId
+
+        let matchTime = new Date(req.body.matchTime)
+
+        if (matchTime.getTime() < Date.now()) {
+            return next(new ErrorResponse(`Match starting time is in the past`, 400))
+        }
 
         //create bet
         const newBet = await Bet.create(req.body);
@@ -81,7 +90,7 @@ exports.updateBet = async (req, res, next) => {
             return next(new ErrorResponse(`you connot enter result, only score`, 400))
 
         //check for bet or score entering
-        if (!Object.keys(req.body).includes('bet') && !Object.keys(req.body).includes('score'))
+        if (!Object.keys(req.body).includes('bet') && !Object.keys(req.body).includes('score') && !Object.keys(req.body).includes('status'))
             return next(new ErrorResponse(`you didnt update`, 400))
 
         //check for teams score entering
@@ -104,10 +113,6 @@ exports.updateBet = async (req, res, next) => {
 
         if (!betUpdate) {
             return next(new ErrorResponse(`couldn't find id: ${req.params.id}`, 404))
-        }
-
-        if (betUpdate.user.toString() !== req.user.id && req.user.role !== 'admin') {
-            return next(new ErrorResponse(`user: ${req.user.id} is not authorize to update this bet`, 401))
         }
 
         betUpdate = await Bet.findByIdAndUpdate(req.params.id, req.body, {

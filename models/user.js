@@ -25,6 +25,18 @@ const userScheme = new mongoose.Schema({
         minlength: 6,
         select: false
     },
+    balance: {
+        type: Number,
+        default: 0
+    },
+    loses: {
+        type: Number,
+        default: 0
+    },
+    wins: {
+        type: Number,
+        default: 0
+    },
     resetPasswordToken: String,
     resetPasswordExpier: Date,
     createdAt: {

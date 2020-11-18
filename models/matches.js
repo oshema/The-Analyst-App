@@ -33,6 +33,9 @@ const matchScheme = new mongoose.Schema({
         default: 0,
         min: [0, 'cannot be below 0']
     },
+    gameTime: {
+        type: Date,
+    },
     finished: {
         type: Boolean,
         default: false

@@ -10,13 +10,12 @@ const sendEmail = require('../utills/sendEmail')
 
 exports.register = async (req, res, next) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password } = req.body;
 
         const user = await User.create({
             name,
             email,
-            password,
-            role
+            password
         });
 
         //send response
@@ -75,7 +74,7 @@ exports.me = async (req, res, next) => {
 }
 
 //@desc logout user / clear cookie
-//route GET /winner/auth/loguot
+//route GET /winner/auth/logout
 //access private
 
 exports.logout = async (req, res, next) => {

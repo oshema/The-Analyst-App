@@ -6,11 +6,11 @@ const router = express.Router();
 
 router.get('/', getBets)
 
-router.post('/:matchId', protect, authorize('admin'), createBet);
+router.post('/:matchId', protect, createBet);
 
 router.route('/:id')
     .get(getBet)
-    .put(protect, authorize('admin'), updateBet)
-    .delete(protect, authorize('admin'), deleteBet);
+    .put(protect, updateBet)
+    .delete(protect, deleteBet);
 
 module.exports = router;

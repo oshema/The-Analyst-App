@@ -7,6 +7,7 @@ const errorHandler = require('./middleware/errorHandler')
 const connectDB = require('./config/db')
 const mongoSanitize = require('express-mongo-sanitize')
 const helmet = require('helmet')
+const cors = require('cors')
 
 // import my routes
 const bets = require('./routes/bets.js')
@@ -31,13 +32,21 @@ app.use(mongoSanitize());
 //helmet protection
 app.use(helmet());
 
+//activate cors
+app.use(cors(
+    {
+        origin: "http://localhost:3000",
+        credentials: true
+    }
+));
+
 //middelware logger in development mode
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'))
 }
 
-//use cookie-parer
-app.use(cookieParser())
+//use cookie-parser
+app.use(cookieParser());
 
 //use routes
 app.use('/winner/match', matches);
