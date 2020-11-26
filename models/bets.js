@@ -1,48 +1,6 @@
 const mongoose = require('mongoose')
 
-const betScheme = new mongoose.Schema({
-    result: {
-        type: String,
-        enum: [
-            '1',
-            '2',
-            'x'
-        ],
-    },
-    score: {
-        team1: {
-            type: Number,
-            min: [0, 'Score cannot be below 0'],
-            require: true
-        },
-        team2: {
-            type: Number,
-            min: [0, 'Score cannot be below 0'],
-            require: true
-        }
-    },
-    team1name: {
-        type: String,
-        required: true
-    },
-    team2name: {
-        type: String,
-        required: true
-    },
-    bet: {
-        type: Number,
-        min: [10, 'Bet cannot be below 0'],
-        required: true
-    },
-    match: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'Match',
-        required: true
-    },
-    matchTime: {
-        type: Date,
-        required: true
-    },
+const playerSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
@@ -53,9 +11,32 @@ const betScheme = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
+    team1score: {
+        type: Number,
+        min: [0, 'Score cannot be below 0'],
+        require: true
+    },
+    team2score: {
+        type: Number,
+        min: [0, 'Score cannot be below 0'],
+        require: true
+    },
+    result: {
+        type: String,
+        enum: [
+            '1',
+            '2',
+            'x'
+        ],
+    },
+})
+
+const betScheme = new mongoose.Schema({
+    players: [playerSchema],
+    bet: {
+        type: Number,
+        min: [10, 'Bet cannot be below 10'],
+        required: true
     },
     status: {
         type: String,
@@ -67,13 +48,35 @@ const betScheme = new mongoose.Schema({
             'canceled',
         ],
 
+    },
+    team1name: {
+        type: String,
+        required: true
+    },
+    team2name: {
+        type: String,
+        required: true
+    },
+    match: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Match',
+        required: true
+    },
+    matchTime: {
+        type: Date,
+        required: true
+    },
+
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
 });
 
-betScheme.pre('save', function (next) {
-    if (this.score.team1 > this.score.team2)
+playerSchema.pre('save', function (next) {
+    if (this.team1score > this.team2score)
         this.result = '1';
-    else if (this.score.team1 < this.score.team2)
+    else if (this.team1score < this.team2score)
         this.result = '2';
     else
         this.result = 'x';

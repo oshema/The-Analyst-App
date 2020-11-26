@@ -8,8 +8,39 @@ const Match = require('../models/matches')
 
 exports.getBets = async (req, res, next) => {
     try {
-        console.log(Bet)
         const findBets = await Bet.find();
+
+        //update bet status before showing all bets
+        await Promise.all(findBets.map(async bet => {
+            if (bet.status !== "canceled") {
+                let matchTime = new Date(bet.matchTime).getTime();
+                //get this time (utc + 2 hours)
+                let now = Date.now() + 7200000;
+                //if more then 110 minutes pass after the game change status to finish 
+                if (now > matchTime + (6600000)) {
+                    const betupdate = await Bet.findByIdAndUpdate(bet._id, { status: "finished" }, {
+                        new: true,
+                        runValidators: true
+                    })
+                    bet.status = betupdate.status;
+                }
+                else if (now > matchTime) {
+                    const betupdate = await Bet.findByIdAndUpdate(bet._id, { status: "closed" }, {
+                        new: true,
+                        runValidators: true
+                    })
+                    bet.status = betupdate.status;
+                }
+                else if (now < matchTime) {
+                    const betupdate = await Bet.findByIdAndUpdate(bet._id, { status: "open" }, {
+                        new: true,
+                        runValidators: true
+                    })
+                    bet.status = betupdate.status;
+                }
+            }
+        }))
+
         res.status('200').json(
             {
                 success: true,
@@ -19,7 +50,6 @@ exports.getBets = async (req, res, next) => {
             })
     }
     catch (err) {
-        console.log()
         next(err)
     }
 }
@@ -47,23 +77,25 @@ exports.getBet = async (req, res, next) => {
 
 exports.createBet = async (req, res, next) => {
     try {
-        //add user to req.body
-        req.body.user = req.user.id
+        const playerData = { user: req.user.id, username: req.user.name, team1score: req.body.team1score, team2score: req.body.team2score };
 
-        //add user name to req.body
-        req.body.username = req.user.name
+        delete req.body.team1score;
+        delete req.body.team2score;
+
+        req.body.players = playerData
 
         //add matchId to req.body
         req.body.match = req.params.matchId
 
         let matchTime = new Date(req.body.matchTime)
 
-        if (matchTime.getTime() < Date.now()) {
+        if (matchTime.getTime() < Date.now() + 7200000) {
             return next(new ErrorResponse(`Match starting time is in the past`, 400))
         }
 
         //create bet
         const newBet = await Bet.create(req.body);
+
 
         res.status(201).json(
             {
@@ -89,10 +121,6 @@ exports.updateBet = async (req, res, next) => {
         if (Object.keys(req.body).includes('result'))
             return next(new ErrorResponse(`you connot enter result, only score`, 400))
 
-        //check for bet or score entering
-        if (!Object.keys(req.body).includes('bet') && !Object.keys(req.body).includes('score') && !Object.keys(req.body).includes('status'))
-            return next(new ErrorResponse(`you didnt update`, 400))
-
         //check for teams score entering
         if (Object.keys(req.body).includes('score')) {
             if (!Object.keys(req.body.score).includes('team1') || !Object.keys(req.body.score).includes('team2'))
@@ -113,6 +141,26 @@ exports.updateBet = async (req, res, next) => {
 
         if (!betUpdate) {
             return next(new ErrorResponse(`couldn't find id: ${req.params.id}`, 404))
+        }
+
+        //check for bet status
+
+        if (req.body.status !== "canceled") {
+            let matchTime = ''
+            //check if user update match time 
+            if (req.body.matchTime) {
+                matchTime = new Date(req.body.matchTime).getTime()
+            }
+            else {
+                matchTime = new Date(betUpdate.matchTime).getTime()
+            }
+
+            if (req.body.createdAt > matchTime + (6600000)) {
+                req.body.status = 'finished'
+            }
+            else if (req.body.createdAt > matchTime) {
+                req.body.status = 'closed'
+            }
         }
 
         betUpdate = await Bet.findByIdAndUpdate(req.params.id, req.body, {
