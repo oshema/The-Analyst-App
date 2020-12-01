@@ -175,6 +175,62 @@ exports.updateBet = async (req, res, next) => {
     }
 }
 
+// @desc join bet
+// @route PUT /winner/bet/join/:id
+// @access private
+
+exports.joinBet = async (req, res, next) => {
+    try {
+        let mainBet = await Bet.findById(req.params.id)
+        if (!mainBet) {
+            return next(new ErrorResponse(`couldn't find id: ${req.params.id}`, 404))
+        }
+        if (mainBet.status !== 'open') {
+            return next(new ErrorResponse(`This bet is closed`, 404))
+        }
+
+        const playerData = {
+            user: req.user.id,
+            username: req.user.name,
+            team1score: req.body.team1score,
+            team2score: req.body.team2score
+        }
+
+        //check if player or guess existing already
+        let isPlayer = false;
+        let isGuess = false;
+        mainBet.players.forEach(async bet => {
+            if (bet.user == playerData.user) {
+                isPlayer = true;
+            }
+            if (bet.team1score == playerData.team1score && bet.team2score == playerData.team2score) {
+                isGuess = true;
+            }
+        });
+
+        if (isPlayer) {
+            return next(new ErrorResponse(`You already have a guess in this bet`, 404))
+        }
+        if (isGuess) {
+            return next(new ErrorResponse(`This score guess is already taken`, 404))
+        }
+
+        //push new bet
+        mainBet.players.push(playerData);
+        await mainBet.save(function (err, playersUpdated) {
+            if (err) {
+                next(err)
+            }
+            console.log(playersUpdated.players)
+            res.status('200')
+                .json({ success: true, msg: `new Bet joined to main bet: ${req.params.id}`, data: playersUpdated.players[playersUpdated.players.length - 1] })
+        })
+    }
+    catch (err) {
+        next(err)
+    }
+}
+
 // @desc delete Bet
 // @route DELETE /winner/bet/:id
 // @access private
