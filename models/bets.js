@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Match = require('../models/matches')
 
 const playerSchema = new mongoose.Schema({
     user: {
@@ -70,8 +71,34 @@ const betScheme = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    team1endScore: {
+        type: Number,
+        min: [0, 'Score cannot be below 0'],
+        default: 0
+    },
+    team2endScore: {
+        type: Number,
+        min: [0, 'Score cannot be below 0'],
+        default: 0
+    },
+    isFinalScore: {
+        type: Boolean,
+        default: false
+    },
+    toDestroy: {
+        type: Date
+    },
+    winner: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+    },
+    isPrizeCollected: {
+        type: Boolean,
+        default: false
     }
 });
+
 
 playerSchema.pre('save', function (next) {
     if (this.team1score > this.team2score)
@@ -82,5 +109,6 @@ playerSchema.pre('save', function (next) {
         this.result = 'x';
     next();
 })
+
 
 module.exports = mongoose.model('Bet', betScheme);

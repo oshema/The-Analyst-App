@@ -25,7 +25,11 @@ const userScheme = new mongoose.Schema({
         minlength: 6,
         select: false
     },
-    balance: {
+    points: {
+        type: Number,
+        default: 0
+    },
+    total: {
         type: Number,
         default: 0
     },
@@ -34,6 +38,14 @@ const userScheme = new mongoose.Schema({
         default: 0
     },
     wins: {
+        type: Number,
+        default: 0
+    },
+    drew: {
+        type: Number,
+        default: 0
+    },
+    stats: {
         type: Number,
         default: 0
     },
@@ -55,6 +67,14 @@ userScheme.pre('save', async function (next) {
     this.password = await bcrypt.hash(this.password, salt);
     next();
 })
+
+userScheme.pre('save', async function (next) {
+    if (this.total > 0) {
+        this.stats = (this.wins * 100) / this.total;
+    }
+    next();
+})
+
 
 //sign jwt and return
 userScheme.methods.getSignedJwtToken = function () {

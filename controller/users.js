@@ -9,7 +9,12 @@ const User = require('../models/user')
 
 exports.getUsers = async (req, res, next) => {
     try {
-        const users = await User.find();
+        const users = await User.find().sort({ points: -1, wins: -1, stats: -1, _id: -1 })
+
+        await Promise.all(users.map(async user => {
+            await user.save();
+        }))
+
         res.status(200).json(
             {
                 success: true,
@@ -17,6 +22,7 @@ exports.getUsers = async (req, res, next) => {
                 count: users.length,
                 data: users
             })
+
     }
     catch (err) {
         next(err)

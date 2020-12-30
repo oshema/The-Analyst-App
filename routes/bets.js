@@ -1,5 +1,5 @@
 const express = require('express');
-const { getBets, getBet, createBet, updateBet, joinBet, deleteBet } = require('../controller/bets.js')
+const { getBets, getBet, createBet, updateBet, joinBet, deleteBet, deleteGuess, updateGuess } = require('../controller/bets.js')
 const { protect, authorize } = require('../middleware/auth')
 
 const router = express.Router();
@@ -14,5 +14,9 @@ router.route('/:id')
     .delete(protect, deleteBet);
 
 router.put('/join/:id', protect, joinBet)
+
+router.route('/:id/:guessid')
+    .put(protect, updateGuess)
+    .delete(protect, deleteGuess)
 
 module.exports = router;

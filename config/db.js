@@ -7,6 +7,7 @@ const connectDB = async () => {
         useFindAndModify: false,
         useUnifiedTopology: true
     });
+    // mongoose.set('debug', true);
     console.log(`mongoDB is connected: ${conn.connection.host}`.blue.bold);
 }
 

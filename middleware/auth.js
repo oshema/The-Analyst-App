@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken')
 
 exports.protect = async (req, res, next) => {
     try {
-        let token;
+        let token = '';
+
 
         if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
             token = req.headers.authorization.split(' ')[1];
@@ -20,16 +21,10 @@ exports.protect = async (req, res, next) => {
         }
 
         //verify token
-        try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-            decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-            req.user = await User.findById(decoded.id)
-            next();
-        }
-        catch (err) {
-            return next(err)
-        }
+        req.user = await User.findById(decoded.id)
+        next();
     }
     catch (err) {
         next(err)

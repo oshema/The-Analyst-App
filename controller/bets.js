@@ -1,6 +1,8 @@
 const ErrorResponse = require('../utills/errorResponse')
 const Bet = require('../models/bets')
 const Match = require('../models/matches')
+const User = require('../models/user')
+
 
 // @desc get all bets
 // @route GET /winner/bet
@@ -8,39 +10,61 @@ const Match = require('../models/matches')
 
 exports.getBets = async (req, res, next) => {
     try {
-        const findBets = await Bet.find();
+        const findBets = await Bet.find().sort({ matchTime: -1 });;
 
         //update bet status before showing all bets
         await Promise.all(findBets.map(async bet => {
+
+            const winner = await concludeBet(bet);
+
+            if (bet.toDestroy < Date.now()) {
+                const betDestroyed = await Bet.findByIdAndDelete(bet._id);
+                console.log("Bet Was Delete: ", betDestroyed)
+            }
             if (bet.status !== "canceled") {
+                let betupdate = ""
                 let matchTime = new Date(bet.matchTime).getTime();
                 //get this time (utc + 2 hours)
                 let now = Date.now() + 7200000;
                 //if more then 110 minutes pass after the game change status to finish 
-                if (now > matchTime + (6600000)) {
-                    const betupdate = await Bet.findByIdAndUpdate(bet._id, { status: "finished" }, {
+
+                if (now > matchTime) {
+                    if (bet.players.length < 2) {
+                        betupdate = await Bet.findByIdAndUpdate(bet._id, { status: "canceled", toDestroy: Date.now() + 24 * 60 * 60 * 1000 }, {
+                            new: true,
+                            runValidators: true
+                        })
+                    }
+                    else if (now > matchTime + (6600000)) {
+                        if (bet.isPrizeCollected) {
+                            betupdate = await Bet.findByIdAndUpdate(bet._id, { status: "finished", toDestroy: Date.now() + 24 * 60 * 60 * 1000 }, {
+                                new: true,
+                                runValidators: true
+                            })
+                        } else {
+                            betupdate = await Bet.findByIdAndUpdate(bet._id, { status: "finished" }, {
+                                new: true,
+                                runValidators: true
+                            })
+                        }
+                    }
+                    else {
+                        betupdate = await Bet.findByIdAndUpdate(bet._id, { status: "closed" }, {
+                            new: true,
+                            runValidators: true
+                        })
+                    }
+
+                } else {
+                    betupdate = await Bet.findByIdAndUpdate(bet._id, { status: "open" }, {
                         new: true,
                         runValidators: true
                     })
-                    bet.status = betupdate.status;
                 }
-                else if (now > matchTime) {
-                    const betupdate = await Bet.findByIdAndUpdate(bet._id, { status: "closed" }, {
-                        new: true,
-                        runValidators: true
-                    })
-                    bet.status = betupdate.status;
-                }
-                else if (now < matchTime) {
-                    const betupdate = await Bet.findByIdAndUpdate(bet._id, { status: "open" }, {
-                        new: true,
-                        runValidators: true
-                    })
-                    bet.status = betupdate.status;
-                }
+
+                bet.status = betupdate.status;
             }
         }))
-
         res.status('200').json(
             {
                 success: true,
@@ -96,6 +120,17 @@ exports.createBet = async (req, res, next) => {
         //create bet
         const newBet = await Bet.create(req.body);
 
+        //add bet ref id to match
+        const match = await Match.findById(req.body.match)
+        match.bets.push(newBet._id)
+        await match.save(function (err) {
+            if (err) {
+                newBet.status = 'canceled'
+                return next(new ErrorResponse(`match error`, 500))
+            }
+        })
+
+
 
         res.status(201).json(
             {
@@ -115,60 +150,83 @@ exports.createBet = async (req, res, next) => {
 
 exports.updateBet = async (req, res, next) => {
     try {
-        //update validation
 
-        //check for result entering
-        if (Object.keys(req.body).includes('result'))
-            return next(new ErrorResponse(`you connot enter result, only score`, 400))
+        let bet = await Bet.findById(req.params.id)
 
-        //check for teams score entering
-        if (Object.keys(req.body).includes('score')) {
-            if (!Object.keys(req.body.score).includes('team1') || !Object.keys(req.body.score).includes('team2'))
-                return next(new ErrorResponse(`you need to enter team 1 and 2`, 400))
-            else {
-                // update result according to score update
-                if (req.body.score.team1 > req.body.score.team2)
-                    req.body.result = '1';
-                else if (req.body.score.team1 < req.body.score.team2)
-                    req.body.result = '2';
-                else
-                    req.body.result = 'x';
-            }
-        }
-        req.body.createdAt = Date.now();
-
-        let betUpdate = await Bet.findById(req.params.id)
-
-        if (!betUpdate) {
+        if (!bet) {
             return next(new ErrorResponse(`couldn't find id: ${req.params.id}`, 404))
         }
-
-        //check for bet status
-
-        if (req.body.status !== "canceled") {
-            let matchTime = ''
-            //check if user update match time 
-            if (req.body.matchTime) {
-                matchTime = new Date(req.body.matchTime).getTime()
-            }
-            else {
-                matchTime = new Date(betUpdate.matchTime).getTime()
-            }
-
-            if (req.body.createdAt > matchTime + (6600000)) {
-                req.body.status = 'finished'
-            }
-            else if (req.body.createdAt > matchTime) {
-                req.body.status = 'closed'
-            }
+        if (bet.status !== 'open') {
+            return next(new ErrorResponse(`This bet is closed`, 400))
         }
 
-        betUpdate = await Bet.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true
-        })
+        let matchTime = new Date(bet.matchTime).getTime();
+        //get this time (utc + 2 hours)
+        let now = Date.now() + 7200000;
 
-        res.status('200').json({ success: true, msg: `Update Bet ${req.params.id}`, data: betUpdate })
+        if (now > matchTime)
+            return next(new ErrorResponse(`Cannot edit, match already started`, 400))
+
+        if (bet.players.length > 1)
+            return next(new ErrorResponse(`Multiple guesses, Cannot edit bet - only guess`, 400))
+
+        bet.players[0].team1score = req.body.team1score;
+        bet.players[0].team2score = req.body.team2score;
+        bet.bet = req.body.bet;
+
+        await bet.save(function (err, updateData) {
+            if (err) {
+                next(err)
+            }
+            res.status('200')
+                .json({ success: true, msg: `Bet has been edited`, data: updateData })
+        })
+    }
+    catch (err) {
+        next(err)
+    }
+}
+
+// @desc update guess
+// @route PUT /winner/bet/:id/:guessid
+// @access private
+
+exports.updateGuess = async (req, res, next) => {
+    try {
+
+        let bet = await Bet.findById(req.params.id)
+
+        if (!bet) {
+            return next(new ErrorResponse(`couldn't find id: ${req.params.id}`, 404))
+        }
+        if (bet.status !== 'open') {
+            return next(new ErrorResponse(`This bet is closed`, 400))
+        }
+
+        //check for duplicate guess in the same doc (score has to be unique for each bet)
+        let checkDup = await Bet.find({ _id: req.params.id }, { players: { $elemMatch: { team1score: req.body.team1score, team2score: req.body.team2score } } })
+        if (checkDup[0].players.length > 0) {
+            console.log
+            return next(new ErrorResponse(`This guess already exist, please choose a unique score`, 400))
+        }
+
+        let matchTime = new Date(bet.matchTime).getTime();
+        //get this time (utc + 2 hours)
+        let now = Date.now() + 7200000;
+
+        if (now > matchTime)
+            return next(new ErrorResponse(`Cannot edit, match already started`, 400))
+
+
+        await Bet.updateMany({ _id: req.params.id, "players._id": req.params.guessid },
+            { $set: { "players.$.team1score": req.body.team1score, "players.$.team2score": req.body.team2score } }, (err, data) => {
+                if (err)
+                    next(err)
+                else {
+                    res.status('200').json({ success: true, msg: `Guess was edited`, data: { team1score: req.body.team1score, team2score: req.body.team2score } })
+                }
+            })
+
     }
     catch (err) {
         next(err)
@@ -188,6 +246,17 @@ exports.joinBet = async (req, res, next) => {
         if (mainBet.status !== 'open') {
             return next(new ErrorResponse(`This bet is closed`, 404))
         }
+
+        if (!req.body.team1score || !req.body.team2score) {
+            return next(new ErrorResponse(`you need to enter valid score`, 400))
+        }
+
+        let matchTime = new Date(mainBet.matchTime).getTime();
+        //get this time (utc + 2 hours)
+        let now = Date.now() + 7200000;
+
+        if (now > matchTime)
+            return next(new ErrorResponse(`Cannot join, match already started`, 404))
 
         const playerData = {
             user: req.user.id,
@@ -221,7 +290,6 @@ exports.joinBet = async (req, res, next) => {
             if (err) {
                 next(err)
             }
-            console.log(playersUpdated.players)
             res.status('200')
                 .json({ success: true, msg: `new Bet joined to main bet: ${req.params.id}`, data: playersUpdated.players[playersUpdated.players.length - 1] })
         })
@@ -233,18 +301,111 @@ exports.joinBet = async (req, res, next) => {
 
 // @desc delete Bet
 // @route DELETE /winner/bet/:id
-// @access private
+// @access private 
 
 exports.deleteBet = async (req, res, next) => {
     try {
-        const betDelete = await Bet.findByIdAndDelete(req.params.id)
-
-        if (!betDelete) {
+        const bet = await Bet.findById(req.params.id);
+        if (!bet) {
             return next(new ErrorResponse(`couldn't find id: ${req.params.id}`, 404))
         }
+
+        const matchId = bet.match
+
+        let matchTime = new Date(bet.matchTime).getTime();
+        //get this time (utc + 2 hours)
+        let now = Date.now() + 7200000;
+
+        if (now > matchTime)
+            return next(new ErrorResponse(`Cannot delete, match already started`, 404))
+
+        const betDelete = await bet.deleteOne()
+        if (!betDelete) {
+            return next(new ErrorResponse(`cannot remove bet`, 404))
+        }
+
+        //remove bet ref ID in match
+        await Match.update({ _id: matchId }, { $pull: { bets: bet._id } },
+            function (err, data) {
+
+                if (err)
+                    return next(err);
+            })
+
+
         res.status('200').json({ success: true, msg: `deleted bet ${req.params.id}`, data: betDelete })
     }
     catch (err) {
         next(err)
     }
+}
+
+// @desc delete guess
+// @route DELETE /winner/bet/:id/:guessid
+// @access private 
+
+exports.deleteGuess = async (req, res, next) => {
+    try {
+        const bet = await Bet.findById(req.params.id);
+        if (!bet) {
+            return next(new ErrorResponse(`couldn't find id: ${req.params.id}`, 404))
+        }
+
+        let matchTime = new Date(bet.matchTime).getTime();
+        //get this time (utc + 2 hours)
+        let now = Date.now() + 7200000;
+
+        if (now > matchTime)
+            return next(new ErrorResponse(`Cannot delete, match already started`, 404))
+
+        await Bet.update({ _id: req.params.id }, { $pull: { players: { _id: req.params.guessid } } },
+            function (err, data) {
+
+                if (err)
+                    return next(err);
+                else {
+                    res.status('200').json({ success: true, msg: `deleted guess ${req.params.guessid}`, data: data })
+                }
+            });
+
+    }
+    catch (err) {
+        next(err)
+    }
+}
+
+
+const concludeBet = async (bet) => {
+    if (bet.isFinalScore && bet.status == 'finished') {
+        if (!bet.isPrizeCollected) {
+            if (bet.players.length > 1) {
+                let loserList = [];
+                let betPrize = 0 - bet.bet;
+                bet.players.forEach(async guess => {
+                    betPrize = betPrize + bet.bet;
+                    if (guess.team1score == bet.team1endScore && guess.team2score == bet.team2endScore) {
+                        bet.winner = guess.user
+                    } else {
+                        loserList.push(guess.user)
+                    }
+                })
+                if (bet.winner) {
+                    const winner = await User.findOneAndUpdate({ _id: bet.winner },
+                        { $inc: { wins: 1, points: betPrize, total: 1 } },
+                        { new: true, runValidators: true });
+                    const losers = await User.updateMany({ _id: { $in: loserList } },
+                        { $inc: { loses: 1, points: -bet.bet, total: 1 } },
+                        { new: true, runValidators: true });
+                } else {
+                    const drews = await User.updateMany({ _id: { $in: loserList } },
+                        { $inc: { drew: 1, total: 1 } },
+                        { new: true, runValidators: true });
+                    await User.find
+                }
+                bet.isPrizeCollected = true
+                const savedBet = await bet.save()
+            }
+        }
+    }
+    return bet
 }
