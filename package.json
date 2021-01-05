@@ -5,7 +5,8 @@
   "main": "myFirstServer.js",
   "scripts": {
     "start": "NODE_ENV=Production node winner",
-    "dev": "nodemon winner"
+    "dev": "nodemon winner",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix winner-front && npm run build --prefix winner-front"
   },
   "author": "",
   "license": "ISC",

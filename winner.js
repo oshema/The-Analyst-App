@@ -1,13 +1,14 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const morgan = require('morgan')
-const colors = require('colors')
-const cookieParser = require('cookie-parser')
-const errorHandler = require('./middleware/errorHandler')
-const connectDB = require('./config/db')
-const mongoSanitize = require('express-mongo-sanitize')
-const helmet = require('helmet')
-const cors = require('cors')
+const morgan = require('morgan');
+const colors = require('colors');
+const cookieParser = require('cookie-parser');
+const errorHandler = require('./middleware/errorHandler');
+const connectDB = require('./config/db');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+const cors = require('cors');
+const path = require('path');
 
 // import my routes
 const bets = require('./routes/bets.js')
@@ -56,6 +57,17 @@ app.use('/winner/users', users);
 
 //Error Handler middleware
 app.use(errorHandler);
+
+//serve static assets if in production
+if (process.env.NODE_ENV === 'production') {
+    //set static folder
+    app.use(express.static('winner-front/build'))
+
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'winner-front', "build", "index.html"));
+    })
+}
+
 
 
 // establish port
