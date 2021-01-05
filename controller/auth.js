@@ -195,7 +195,7 @@ exports.resetPassword = async (req, res, next) => {
             return next(new ErrorResponse('Invalid token', 400))
         }
 
-        //set new password
+        //Set new password
         user.password = req.body.password
         user.resetPasswordToken = undefined;
         user.resetPasswordExpier = undefined;
