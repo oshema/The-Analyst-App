@@ -2,13 +2,15 @@
   "name": "y",
   "version": "1.0.0",
   "description": "first server",
-  "main": "myFirstServer.js",
+  "main": "winner.js",
   "engines": {
     "node": "13.x"
   },
   "scripts": {
-    "start": "NODE_ENV=Production node winner",
-    "dev": "nodemon winner",
+    "client-install": "npm-install --prefix winner-front",
+    "start": "node winner.js",
+    "server": "nodemon winner.js",
+    "client": "npm start --prefix winner-front",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix winner-front && npm run build --prefix winner-front"
   },
   "author": "",
@@ -33,3 +35,4 @@
     "validator": "^13.1.17"
   }
 }
+//"NODE_ENV=Production node winner",
