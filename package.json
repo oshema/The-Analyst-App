@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "first server",
   "main": "myFirstServer.js",
+  "engines": {
+    "node": "13.x"
+  },
   "scripts": {
     "start": "NODE_ENV=Production node winner",
     "dev": "nodemon winner",
