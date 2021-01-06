@@ -1,0 +1,49 @@
+
+.usersLayout{
+    width: 100%;
+    display: flex;
+    font-family: 'poppins';
+    font-size: 20px;
+    font-weight: 100;
+    margin-top: 5px;
+    text-align: center;
+}
+
+.chartRank{
+    width: 10%;
+    font-weight: 600;
+}
+
+.chartUser{
+    width: 20%;
+    text-align: left;
+    font-weight: 200;
+    font-variant: small-caps;
+    font-size: large;
+    overflow: hidden;
+
+}
+
+.chartTotal{ 
+    width: 15%;
+}
+
+.chartWin{
+    width: 10%;
+}
+
+.chartLost{
+    width: 10%;
+    
+}
+
+.chartStats{
+    width: 15%;
+    
+}
+
+.chartPts{
+    width: 20%;
+    font-weight: 400;
+}
+

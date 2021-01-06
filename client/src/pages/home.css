@@ -1,0 +1,299 @@
+
+.navbar{
+    width: 100%;
+    height: 50px;
+    background-color: rgba(6, 117, 245, 0.411);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.199);
+    display: flex;
+    -webkit-box-shadow: 0px 13px 17px -8px rgba(0,0,0,0.55);
+    -moz-box-shadow: 0px 13px 17px -8px rgba(0,0,0,0.55);
+    box-shadow: 0px 13px 17px -8px rgba(0,0,0,0.55);
+}
+
+.chartNav{
+    font-family: 'poppins';
+    font-weight: 300;
+    color: white;
+
+}
+
+.logout{
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    vertical-align: text-bottom;
+}
+
+.welcome{
+    position: relative;
+    top: 7px;
+    margin-right: 3px;
+    font-family: 'poppins';
+    font-weight: 500;
+    font-size: 20px;
+    color: white;
+}
+
+.adminTitle{
+    font-family: 'poppins';
+    font-size: 10px;
+    color: rgb(255, 175, 208);
+    font-weight: 400;
+    margin-right: 10px;
+}
+
+.homeImg { 
+    background: linear-gradient(to right,#9b015567,#ffffffb7, #0306bd48), url(../img/homeBG.jpeg) no-repeat top center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+}
+
+
+.homeLayout {
+    margin-top: 30px;
+    display: flex ;
+    justify-content: space-between;
+}
+
+.matchTable{
+    width: 40%;
+    height: 500px;
+    margin-left: 50px;
+    border: 2px solid rgb(3, 3, 3);
+    background: linear-gradient(to right,#609faf88,#95cedf77, #82acd483);
+    -webkit-box-shadow: 5px 4px 21px -3px rgba(0,0,0,0.42);
+    -moz-box-shadow: 5px 4px 21px -3px rgba(0,0,0,0.42);
+    box-shadow: 5px 4px 21px -3px rgba(0,0,0,0.42);
+    
+}
+
+.betTable{
+    width: 40%;
+    height: 500px;
+    margin-right: 50px;
+    border: 2px solid rgb(3, 3, 3);
+    background: linear-gradient(to right,#82ccee65,#5f969359, #66a88f65);
+    -webkit-box-shadow: 5px 4px 21px -3px rgba(0,0,0,0.42);
+    -moz-box-shadow: 5px 4px 21px -3px rgba(0,0,0,0.42);
+    box-shadow: 5px 4px 21px -3px rgba(0,0,0,0.42);
+    
+}
+
+
+.matchHeader{
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(to right,#253142,#1d345a, #284d8b);
+    color: rgba(255, 255, 255, 0.850);
+    border: 2px solid #1d345a;
+    box-sizing: border-box;
+    font-size: 30px;
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+}
+
+.matchList{
+    width: 100%;
+    height: 423px;
+    box-sizing: border-box;
+    overflow: scroll
+}
+
+.matchTitle{
+    margin-top: 10px;
+}
+
+.betHeader{
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(to right,#253942,#1d5a5a, #288b6d);
+    color: rgba(255, 255, 255, 0.850);
+    border: 2px solid #1d565a9f;
+    box-sizing: border-box;
+    font-size: 30px;
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+}
+
+.betCategories{
+    display: flex;
+    height: 17px;
+    padding-top: 1px;
+    background-color: rgba(122, 141, 141, 0.925);
+    border-left: 2px solid #1d565a9f;
+    border-right: 2px solid #1d565a9f;
+    border-bottom: 1px solid #1d565a5b;
+    font-family: "Poppins";
+    font-size: 10px;
+    font-weight: 600;
+    box-sizing: border-box;
+}
+
+.betsList{
+    width: 100%;
+    height: 423px;
+    box-sizing: border-box;
+    overflow: scroll
+}
+
+.numMatchHeader{
+    width: 35px;
+    text-align: center;
+}
+
+
+.expandMatchHeader{
+    width: 28px;
+}
+
+.teamsMatchHeader{
+    width: 235px;
+}
+
+.scheduleMatchHeader{
+    width: 160px;
+    text-align: center;
+}
+
+.actionMatchHeader{
+    width: 115px;
+    text-align: center;
+}
+
+.FinalResult{
+    width: 80px;
+    text-align: center;
+}
+
+
+.numBetHeader{
+    width: 22px;
+    text-align: center;
+}
+
+.expandBetHeader{
+    width: 46px;
+    text-align: center;
+}
+
+.statusBetHeader{
+    width: 90px;
+}
+
+.usernameBetHeader{
+    width: 75px;
+}
+
+.scoreBetHeader{
+    width: 85px;
+}
+
+.betPriceBetHeader{
+    width: 39px;
+}
+
+.teamsBetHeader{
+    width: 142px;
+}
+
+.actionBetHeader{
+    width: 65px;
+}
+
+.chartImg { 
+    background: linear-gradient(to right,#f53cbe4d,#c1a2f3c0, #4e038062), url(../img/chartBG.jpg) no-repeat top center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+}
+
+.tableLayout{
+    width: 60%;
+    height: 500px;
+    border: 1px solid #9693a791;
+    margin-top: 100px;
+    background-color: rgba(0, 0, 0, 0.747);
+    color: white;
+    z-index: 1;
+    -webkit-box-shadow: 0px 1px 9px 1px rgba(255, 236, 128, 0.48);
+    -moz-box-shadow: 0px 1px 9px 1px rgba(255, 236, 128, 0.48);
+    box-shadow: 0px 1px 9px 1px rgba(255, 236, 128, 0.48);
+}
+
+.tableHeader{
+    width: 100%;
+    height: 80px;
+    background: linear-gradient(to right,#432e4b3f,#4d4183b0, #3e264d3d);
+    border-bottom: 1px solid #8a869b59;
+    box-sizing: border-box;
+    font-size: 30px;
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+}
+
+.tableTitle{
+    margin-top: 16px;
+    color: rgba(255, 255, 255, 0.904);
+    font-weight: 200;
+    font-family: 'poppins';
+}
+
+.tableCategories{
+    display: flex;
+    height: 20px;
+    padding-top: 1px;
+    background-color: rgba(55, 52, 75, 0.712);
+    border-bottom: 1px solid #1d565a5b;
+    font-family: "Poppins";
+    font-size: 13px;
+    font-weight: 300;
+    box-sizing: border-box;
+    color: white;
+    text-align: center;
+}
+
+.tableRank{
+    width: 10%; 
+}
+
+.tableUser{
+    width: 20%;
+    text-align: left;
+}
+
+.tableTotal{ 
+    width: 15%;
+}
+
+.tableWin{
+    width: 10%;
+}
+
+.tableLost{
+    width: 10%;
+    
+}
+
+.tableStats{
+    width: 15%;
+    
+}
+
+.tablePts{
+    width: 20%;
+}
+
+.StandingBGVideo{
+    position: absolute;
+    width: 100vw;
+    opacity: 0.6;
+}
+

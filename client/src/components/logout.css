@@ -1,0 +1,23 @@
+.logoutButton{
+    width: 90px;
+    height: 30px;
+    outline: none;
+    border: 1px solid black;
+    background: linear-gradient(to top,#ec2b5b00,#2957ec2c, #373adab4);
+    color: white;
+    -webkit-box-shadow: 6px 7px 16px -2px rgba(0,0,0,0.47);
+    -moz-box-shadow: 6px 7px 16px -2px rgba(0,0,0,0.47);
+    box-shadow: 6px 7px 16px -2px rgba(0,0,0,0.47);
+    font-family: 'poppins';
+    font-weight: 100;
+    transition: background-color 1s ease;
+
+}
+
+.logoutButton:hover{
+    background-color: rgba(240, 36, 36, 0.356);
+    color: white;
+    cursor: pointer;
+    
+
+}
