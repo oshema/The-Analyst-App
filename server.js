@@ -31,7 +31,9 @@ app.use(express.json());
 app.use(mongoSanitize());
 
 //helmet protection
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: false,
+}));
 
 //activate cors
 app.use(cors(
