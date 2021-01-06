@@ -2,7 +2,7 @@
   "name": "y",
   "version": "1.0.0",
   "description": "first server",
-  "main": "winner.js",
+  "main": "server.js",
   "engines": {
     "node": "13.x"
   },
