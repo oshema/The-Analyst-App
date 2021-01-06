@@ -7,19 +7,11 @@
     "node": "13.x"
   },
   "scripts": {
-<<<<<<< HEAD
     "client-install": "npm-install --prefix client",
     "start": "NODE_ENV=production nodemon server",
     "dev": "nodemon server",
     "client": "npm start --prefix client",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
-=======
-    "client-install": "npm-install --prefix winner-front",
-    "start": "node winner.js",
-    "server": "nodemon winner.js",
-    "client": "npm start --prefix winner-front",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix winner-front && npm run build --prefix winner-front"
->>>>>>> 18dfd356df67ca5561c010c0b3e0fdffdc3e6282
   },
   "author": "",
   "license": "ISC",
