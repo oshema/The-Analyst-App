@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export async function LoginAPI(email, password) {
-    return await axios.post('http://localhost:5000/winner/auth/login', { email, password }, { withCredentials: true })
+    return await axios.post('https://peaceful-journey-77995.herokuapp.com/winner/auth/login', { email, password }, { withCredentials: true })
 }
 
 export async function LogoutAPI() {
