@@ -2,7 +2,8 @@ import axios from 'axios';
 
 const Auth = async () => {
     try {
-        const res = await axios.get('http://localhost:5000/winner/auth/me', { withCredentials: true });
+        const baseUrl = window.location.origin;
+        const res = await axios.get(`${baseUrl}/winner/auth/me`, { withCredentials: true });
         return res.data.data
     }
     catch (err) {
