@@ -8,7 +8,7 @@ const Bet = require('../models/bets')
 
 exports.getMatches = async (req, res, next) => {
     try {
-        const findMatches = await Match.find().sort({ gameTime: -1 });
+        const findMatches = await Match.find().sort({ gameTime: 1 });
         res.status('200').json(
             {
                 success: true,
