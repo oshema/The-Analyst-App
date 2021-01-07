@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = process.env.baseURL || "http://localhost:5000"
+const baseUrl = process.env.BASE_URL || "http://localhost:5000"
 
 export async function LoginAPI(email, password) {
     return await axios.post(`${baseUrl}/winner/auth/login`, { email, password }, { withCredentials: true })
