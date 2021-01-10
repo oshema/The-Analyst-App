@@ -18,6 +18,11 @@
     background-color: rgba(240, 36, 36, 0.356);
     color: white;
     cursor: pointer;
-    
+}
 
+@media only screen and (max-width: 600px) {
+    .logoutButton{
+        width: 60px;
+        font-size: 12px;
+    }
 }

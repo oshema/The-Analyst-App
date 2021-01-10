@@ -2,7 +2,7 @@ body{
     margin: 0;
 }
 
-.loginImg { 
+.loginImgR { 
     background-image: url(../img/loginBG.jpg);
     background-repeat: no-repeat;
     background-size: cover;
@@ -10,12 +10,20 @@ body{
     width: 100vw;
 }
 
-.titleImg{
+.titleImgR{
     margin-left: 50%;
     transform: translateX(-50%);
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
-.loginBox{
+@media only screen and (max-width: 768px) {
+    .titleImgR{
+        width: 160%;
+    }
+}
+
+.loginBoxR{
     width: 400px;
     height: 400px;
     margin-left: 50%;
@@ -29,16 +37,16 @@ body{
     align-items: center;
 }
 
-.loginButton{
+.loginButtonR{
     width: 310px;
     height: 70px;
 }
 
-.link{
+.linkR{
     text-decoration: 'none';
 }
 
-.loginLinks{
+.loginLinksR{
     width: 100%;
     display: flex;
     justify-content: space-around;

@@ -48,6 +48,9 @@ function Home(props) {
 
     // ************** DECORATION ****************
     const useStyles = makeStyles({
+        IconButton: {
+            paddingLeft: "0px",
+        },
         eventNoteIcon: {
             color: "rgba(255, 255, 255, 0.900)",
             margin: "15px 20px 4px",
@@ -72,7 +75,7 @@ function Home(props) {
         <>
             <div className="homeImg">
                 <div className="navbar">
-                    <IconButton color="secondary" onClick={() => setRefresh(!refresh)}><CachedSharpIcon className={classes.CachedSharpIcon} /></IconButton>
+                    <IconButton color="secondary" className={classes.IconButton} onClick={() => setRefresh(!refresh)}><CachedSharpIcon className={classes.CachedSharpIcon} /></IconButton>
                     <IconButton color="secondary" onClick={() => goToChart()}><span className="chartNav">Chart</span></IconButton>
                     <HowItWorks />
 

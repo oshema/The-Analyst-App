@@ -52,6 +52,7 @@ function CancelMatch({ matchId }) {
         },
         adminIcon: {
             color: "rgb(255, 175, 208);",
+            fontSize: '16px!important'
         }
     })
 

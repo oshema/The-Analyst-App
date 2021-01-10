@@ -1,13 +1,13 @@
-body{
-    margin: 0;
-}
+
 
 .loginImg { 
     background-image: url(../img/loginBG.jpg);
+    background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     height: 100vh;
     width: 100vw;
+    overflow: hidden;
 }
 
 .titleImg{
@@ -15,6 +15,12 @@ body{
     transform: translateX(-50%);
     margin-top: 30px;
     margin-bottom: 30px;
+}
+
+@media only screen and (max-width: 768px) {
+    .titleImg{
+        width: 160%;
+    }
 }
 
 .loginBox{

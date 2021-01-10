@@ -20,7 +20,7 @@
     font-weight: 200;
     font-variant: small-caps;
     font-size: large;
-    overflow: hidden;
+    overflow: scroll;
 
 }
 
@@ -45,5 +45,15 @@
 .chartPts{
     width: 20%;
     font-weight: 400;
+}
+
+
+@media only screen and (max-width: 600px) {
+    .chartUser{
+        text-align: center;
+    }
+    .usersLayout{
+        font-size: 15px;
+    }
 }
 

@@ -29,8 +29,7 @@ function Login() {
             setIsLogged(res.data.success)
         }
         catch (err) {
-            //setError(err.response.data.err)
-            console.log("aaa")
+            setError(err.response.data.err)
         }
     }
 

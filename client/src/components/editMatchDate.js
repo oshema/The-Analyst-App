@@ -65,12 +65,12 @@ function EditMatchDate({ matchId, team1, team2, matchDate }) {
 
     const useStyles = makeStyles({
         cancelButton: {
-            minWidth: '24px',
+            minWidth: '14px',
             height: "22px",
             fontFamily: "poppins",
-            fontSize: '10px',
+            fontSize: '3px',
             padding: '0',
-            margin: '0',
+            marginLeft: "25px",
             "&:hover": {
                 background: "white",
                 color: "red"
@@ -78,6 +78,7 @@ function EditMatchDate({ matchId, team1, team2, matchDate }) {
         },
         adminIcon: {
             color: "rgb(255, 175, 208);",
+            fontSize: '16px!important'
         }
     })
 

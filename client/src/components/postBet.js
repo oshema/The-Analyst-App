@@ -44,9 +44,12 @@ function PostBet(props) {
 
     const useStyles = makeStyles({
         betButton: {
+            minWidth: "8px",
             height: "22px",
             marginRight: "5px",
             fontFamily: "poppins",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
             "&:hover": {
                 background: "#c0264d",
                 color: "white"

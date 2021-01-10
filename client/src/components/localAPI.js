@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = window.location.origin;
+const baseUrl = "http://localhost:5000";
 
 export async function LoginAPI(email, password) {
     return await axios.post(`${baseUrl}/winner/auth/login`, { email, password }, { withCredentials: true })

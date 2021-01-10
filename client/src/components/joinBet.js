@@ -38,12 +38,14 @@ function JoinBet({ team1name, team2name, bet, betId, onGuessAdded }) {
     // ************ DECORATION ***************
     const useStyles = makeStyles({
         button: {
+            minWidth: "40px",
+            width: "40px",
             color: "#db7eff",
             fontFamily: "poppins",
             fontSize: "12px",
             fontWeight: "600",
+            marginLeft: "11px",
             padding: "2px 0",
-            marginLeft: "20px",
             border: "1px solid #db7eff",
             "&:hover": {
                 background: "linear-gradient(to right,#ff7e89,#ff7eb4, #ff7e89)",
@@ -68,7 +70,7 @@ function JoinBet({ team1name, team2name, bet, betId, onGuessAdded }) {
 
     return (
         <>
-            <Button color="primary" variant="outlined" className={classes.button} onClick={handleClickOpen}>Join Bet</Button>
+            <Button color="primary" variant="outlined" className={classes.button} onClick={handleClickOpen}>Join</Button>
             <Dialog open={open} onClose={handleClose}>
                 <span className="errorJoinBet">{error && error}</span>
                 <div className="joinBetWindow">

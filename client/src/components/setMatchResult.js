@@ -80,10 +80,9 @@ function SetMatchResult({ matchData, refresh }) {
 
     const useStyles = makeStyles({
         iconButton: {
-            minWidth: '24px',
             height: "22px",
             fontFamily: "poppins",
-            fontSize: '10px',
+            fontSize: '5px!important',
             padding: '0',
             margin: '0',
             "&:hover": {
@@ -92,10 +91,12 @@ function SetMatchResult({ matchData, refresh }) {
             }
         },
         adminIcon: {
-            color: "rgb(250, 75, 103);"
+            color: "rgb(250, 75, 103);",
+            fontSize: '16px!important'
         },
         adminIconGreen: {
-            color: "rgb(65, 163, 65);"
+            color: "rgb(65, 163, 65);",
+            fontSize: '16px!important'
         },
 
     })
@@ -108,7 +109,7 @@ function SetMatchResult({ matchData, refresh }) {
         <>
             {noBets ?
                 <>
-                    <IconButton onClick={handleClickOpen}><ClearIcon className={classes.adminIcon} /></IconButton>
+                    <IconButton className={classes.iconButton} onClick={handleClickOpen}><ClearIcon className={classes.adminIcon} /></IconButton>
                     <Dialog open={open} onClose={handleClose}>
                         {error && error}
                         <Button onClick={handleClose}>No</Button>
@@ -118,7 +119,7 @@ function SetMatchResult({ matchData, refresh }) {
                 :
                 isFinishSet ?
                     <>
-                        <IconButton onClick={handleClickOpen}><CheckIcon className={classes.adminIconGreen} /></IconButton>
+                        <IconButton className={classes.iconButton} onClick={handleClickOpen}><CheckIcon className={classes.adminIconGreen} /></IconButton>
                         <Dialog open={open} onClose={handleClose}>
                             {error && error}
                             <input type="number" name="team1score" placeholder={matchData.team1} value={team1Score} onChange={e => setTeam1Score(e.target.value)}></input>

@@ -53,9 +53,9 @@ function Register() {
     }
 
     return (
-        <div className="loginImg">
-            <img className="titleImg" src="img/loginTitle.png" />
-            <form className="loginBox" onSubmit={event => formSubmit(event)}>
+        <div className="loginImgR">
+            <img className="titleImgR" src="img/theAnalyst.png" />
+            <form className="loginBoxR" onSubmit={event => formSubmit(event)}>
 
                 <TextField
                     InputProps={{
@@ -116,10 +116,10 @@ function Register() {
                     placeholder="please enter your password"
                     value={password} onChange={e => setPassword(e.target.value)}>
                 </TextField>
-                <div className="loginLinks">
+                <div className="loginLinksR">
                     <Link style={{ textDecoration: 'none' }} to="/login"><Button color="primary">Back to login..</Button></Link>
                 </div>
-                <Button className="loginButton" type="submit" variant="contained" color="primary">
+                <Button className="loginButtonR" type="submit" variant="contained" color="primary">
                     Register
                 </Button>
                 {error && error}
