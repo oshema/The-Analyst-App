@@ -94,14 +94,14 @@ function Login() {
                     placeholder="please enter your password"
                     value={password} onChange={e => setPassword(e.target.value)}>
                 </TextField>
+                <Button className="loginButton" type="submit" variant="contained" color="primary">
+                    Log In
+                </Button>
                 <div className="loginLinks">
                     <div>
                         <Link style={{ textDecoration: 'none' }} to="/register"><Button color="primary">register</Button></Link>
                     </div>
                 </div>
-                <Button className="loginButton" type="submit" variant="contained" color="primary">
-                    Log In
-                </Button>
 
                 {error && error}
                 {isLogged && <Redirect to="/" />}
