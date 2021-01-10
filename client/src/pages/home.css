@@ -66,7 +66,6 @@
     -moz-box-shadow: 5px 4px 21px -3px rgba(0,0,0,0.42);
     box-shadow: 5px 4px 21px -3px rgba(0,0,0,0.42); 
     overflow: scroll;
-    margin-bottom: 10px;
 }    
 
 .betTable{
@@ -89,6 +88,7 @@
         width: 95%;
         height: 250px;
         margin-left: 2%;
+        margin-bottom: 35px;
     }
     .betTable{
         width: 95%;
@@ -350,6 +350,10 @@
 @media only screen and (max-width: 900px) {
     .tableLayout{
         width: 100%;
+    }
+    .adminTitle{
+        font-size: 5px;
+        margin-right: 0px;
     }
 }
 
