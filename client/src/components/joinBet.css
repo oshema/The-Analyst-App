@@ -16,6 +16,12 @@
     color: rgb(3, 0, 19);   
 }
 
+@media only screen and (max-width: 415px) {
+    .joinBetWindow{
+        max-width: 350px;
+    }
+}
+
 .joinScoreInputLayout{
     display: flex;
     justify-content: space-evenly;

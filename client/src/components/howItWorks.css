@@ -16,6 +16,7 @@
     height: 1000px;
     background: url(../img/info.png) no-repeat ;
     background-size: cover;
+    background-position: center;
 }
 
 .cancel{
@@ -25,5 +26,13 @@
 @media only screen and (max-width: 600px) {
     .howItWorks{
         font-size: 12px;
+    }
+}
+
+@media only screen and (max-width: 815px) {
+    .info{
+        width: 270%;
+        max-width: 835px;
+        overflow: scroll;
     }
 }
